@@ -1,0 +1,31 @@
+---
+
+- name: 'Assert that required variables are defined'
+  ansible.builtin.assert:
+    that:
+      - ebdruplab_keepalived_service_user is defined
+      - ebdruplab_keepalived_service_group is defined
+      - ebdruplab_keepalived_vrrp_script is defined
+      - ebdruplab_keepalived_config is defined
+      - ebdruplab_keepalived_auth_pass is defined
+    fail_msg: "Required variables are not all defined. Please check"
+
+- name: 'Assert that ebdruplab_keepalived_vrrp_script structure is correct'
+  ansible.builtin.assert:
+    that:
+      - ebdruplab_keepalived_vrrp_script.script_location is defined
+      - ebdruplab_keepalived_vrrp_script.run_interval is defined
+      - ebdruplab_keepalived_vrrp_script.run_weight is defined
+    fail_msg: "ebdruplab_keepalived_vrrp_script is not correctly defined. Ensure script_location, run_interval, and run_weight are set."
+
+- name: 'Assert that valid OS family is used'
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family in ['RedHat', 'Debian']
+    fail_msg: "This role only supports Debian or RedHat OS families."
+
+- name: 'Assert that Keepalived NIC configuration is set'
+  ansible.builtin.assert:
+    that:
+      - ebdruplab_keepalived_config.keepalived_nic is defined
+    fail_msg: "Keepalived NIC (ebdruplab_keepalived_config.keepalived_nic) is not defined."

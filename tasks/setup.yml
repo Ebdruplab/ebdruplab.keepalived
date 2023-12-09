@@ -1,0 +1,66 @@
+---
+
+- name: 'Install Keepalived'
+  ansible.builtin.package:
+    name: keepalived
+    state: present
+  become: true
+
+- name: 'Create Keepalive health script (http)'
+  ansible.builtin.template:
+    src: keepalived/chk_health.sh.j2
+    dest: "{{ ebdruplab_keepalived_vrrp_script['script_location'] }}"
+    owner: "{{ ebdruplab_keepalived_service_user }}"
+    group: "{{ ebdruplab_keepalived_service_group }}"
+    mode: "0750"
+  become: true
+
+- name: 'Create Keepalive interfaces dir'
+  ansible.builtin.file:
+    path: /etc/keepalived/interfaces
+    state: directory
+    owner: root
+    group: root
+    mode: "0770"
+  become: true
+
+- name: 'Configure Keepalive'
+  ansible.builtin.template:
+    src: keepalived/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    backup: true
+    mode: "0640"
+  notify:
+    - 'Restart Keepalived'
+  become: true
+
+- name: 'Configure Keepalive interface'
+  ansible.builtin.template:
+    src: keepalived/keepalived_interface.conf.j2
+    dest: "/etc/keepalived/interfaces/{{ ebdruplab_keepalived_config['keepalived_nic'] }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - 'Restart Keepalived'
+  become: true
+
+- name: 'Add rich rule for VRRP'
+  ansible.posix.firewalld:
+    rich_rule: rule protocol value="{{ __firewall_rule }}" accept
+    permanent: true
+    immediate: true
+    state: enabled
+  tags:
+    - Install
+    - firewall
+
+- name: 'Enable and start Keepalived'
+  ansible.builtin.service:
+    name: keepalived
+    enabled: true
+    state: started
+  become: true
+  when: not ansible_check_mode

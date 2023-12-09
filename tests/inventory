@@ -1,0 +1,2 @@
+[keepalived]
+localhost ansible_connection=local

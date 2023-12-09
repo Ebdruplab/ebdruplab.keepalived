@@ -1,0 +1,37 @@
+vrrp_instance VI_{{ ebdruplab_keepalived_vrrp_instance }}
+{
+    interface {{ ebdruplab_keepalived_config['keepalived_nic'] }}
+    state {{ ebdruplab_keepalived_config['keepalived_state'] }}
+    virtual_router_id {{ ebdruplab_keepalived_config['virtual_router_id'] }}
+    priority {{ ebdruplab_keepalived_config['keepalived_priority'] }}
+
+    advert_int {{ ebdruplab_keepalived_config['advert_int'] }}
+
+    authentication {
+        auth_type {{ ebdruplab_keepalived_vrrp_script['auth_type'] }}
+        auth_pass {{ ebdruplab_keepalived_auth_pass }}
+    }
+
+    {% if ebdruplab_keepalived_unicast %}
+        {% if ebdruplab_keepalived_config['keepalived_state'] == 'BACKUP' %}
+        unicast_src_ip {{ ebdruplab_keepalived_backup_ip }}
+        unicast_peer {
+            {{ ebdruplab_keepalived_primary_ip }}
+        }
+        {% elif ebdruplab_keepalived_config['keepalived_state'] == 'MASTER' %}
+        unicast_src_ip {{ ebdruplab_keepalived_primary_ip }}
+        unicast_peer {
+            {{ ebdruplab_keepalived_backup_ip }}
+        }
+        {% endif %}
+    {% endif %}
+
+    virtual_ipaddress {
+        {{ ebdruplab_keepalived_virtual_ip }}
+    }
+
+    track_script {
+        chk_health
+    }
+
+}

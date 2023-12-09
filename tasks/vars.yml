@@ -1,0 +1,12 @@
+---
+- name: 'Set correct firewall rule based on the auth type'
+  ansible.builtin.set_fact:
+    __firewall_rule: 'ah'
+  when:
+    - teampass_vrrp_script['auth_type'] == 'AH'
+
+- name: 'Set correct firewall rule based on the auth type'
+  ansible.builtin.set_fact:
+    __firewall_rule: 'vrrp'
+  when:
+    - teampass_vrrp_script['auth_type'] == 'PASS'

@@ -1,0 +1,12 @@
+! Configuration File for keepalived
+
+global_defs {
+    enable_script_security
+    script_user {{ ebdruplab_keepalived_service_user }}
+}
+
+vrrp_script chk_health {
+    script "{{ ebdruplab_keepalived_vrrp_script['script_location'] }}"
+    interval {{ ebdruplab_keepalived_vrrp_script['run_interval'] }}
+    weight {{ ebdruplab_keepalived_vrrp_script['run_weight'] }}
+}

@@ -1,0 +1,4 @@
+#!/bin/bash
+MON_SERVICE_NAME={{ ebdruplab_keepalive_service_mon_name }}
+MON_SERVICE_PORT={{ ebdruplab_keepalived_service_mon_port }}
+/bin/bash -c "</dev/tcp/localhost/$MON_SERVICE_PORT" && systemctl is-active --quiet $MON_SERVICE_NAM

@@ -1,0 +1,8 @@
+---
+# tasks file for ebdruplab.keepalived
+
+- name: 'Import assert.yml'
+  ansible.builtin.include_tasks: assert.yml
+
+- name: 'Import setup.yml'
+  ansible.builtin.include_tasks: setup.yml

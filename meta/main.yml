@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: ebdruplab.keepalived
+  author: Kristian Ebdrup
+  description: Role to install and configure Keepalived
+  company: Ebdruplab
+
+  # List of platforms you support
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+        - 9
+    - name: Debian
+      versions:
+        - all
+
+  # List of any dependencies your role has
+  dependencies: []
+
+# ... other metadata fields
